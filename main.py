@@ -7,10 +7,11 @@ from tinyWinToast.tinyWinToast import Toast
 from text import TEXT
 
 
-def notify(image) -> None:
+def notify(image: Path, text: tuple[str]) -> None:
     toast = Toast()
-    toast.setTitle("hi", maxLines=1)
+    # toast.setTitle(" ".join([word for word in text]), maxLines=1)
     toast.setImage(str(image))
+    toast.setAppID(" ".join([word for word in text]))
     toast.show()
 
 
@@ -63,28 +64,41 @@ def image_editor(image_path: Path, font_path: Path, text: tuple) -> Path:
         return Path(Path(image_path).parent, 'temp.jpg')
 
 
+def main(image_path: Path, font_path: Path):
+    value = time.strftime("%H:%M")
+    if value == "08:00":
+        notify(image_editor(image_path, font_path, TEXT[0]), TEXT[0])
+
+    elif value == "08:03":
+        notify(image_editor(image_path, font_path, TEXT[1]), TEXT[1])
+
+    elif value == "09:30":
+        notify(image_editor(image_path, font_path, TEXT[4]), TEXT[4])
+
+    elif value == "10:29":
+        notify(image_editor(image_path, font_path, TEXT[3]), TEXT[3])
+
+    elif value == "12:30":
+        notify(image_editor(image_path, font_path, TEXT[4]), TEXT[4])
+
+    elif value == "17:00":
+        notify(image_editor(image_path, font_path, TEXT[4]), TEXT[4])
+
+    elif value == "18:30":
+        notify(image_editor(image_path, font_path, TEXT[6]), TEXT[6])
+
+    elif value == "19:55":
+        notify(image_editor(image_path, font_path, TEXT[5]), TEXT[5])
+
+    elif value == "20:03":
+        notify(image_editor(image_path, font_path, TEXT[7]), TEXT[7])
+
+
 if __name__ == "__main__":
-    status =True
-    TEXT = [
-        ["Доброе утро", "Иван"],
-        ["Не пропусти", "уведомления"],
-        ["Приятного аппетита", "Иван"],
-        ["Иван,", "покурил?"],
-        ["Иван,", "чем занимаешься?"],
-        ["Иван", "отчет сделал?"],
-        ["Иван,", "Время расслабиться)))"],
-        ["До завтра,", "Иван"]
-    ]
-    time = 00
+    image_path = str(Path(Path.cwd(), 'static', 'img', 'blank.jpg'))
+    font_path = str(Path(Path.cwd(), 'static', 'fonts', 'Roboto-Bold.ttf'))
+    schedule.every().minutes.do(main, image_path=image_path, font_path=font_path)
+
     while True:
-        for i in TEXT:
-            print(i)
-            image_path = str(Path(Path.cwd(), 'static', 'img', 'blank.jpg'))
-            font_path = str(Path(Path.cwd(), 'static', 'fonts', 'Roboto-Bold.ttf'))
-
-            schedule.every().day.at(f'15:42:{str(time)}'.do(notify, image=image_editor(image_path, font_path, TEXT[i])))
-            # schedule.every(1).minute.do(notify, image=image_editor(image_path, font_path, TEXT.pop()))
-            time += 5
-
-            schedule.run_pending()
-            time.sleep(1)
+        schedule.run_pending()
+        time.sleep(1)
